@@ -1,0 +1,31 @@
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <h1>莫氏绗缝绣饰中心<small> 信息管理系统</small></h1>
+            </div>
+            <div class="navbar-right">
+                <h3 class="navbar-text">欢迎登陆 admin <a href="logout" class="navbar-link">退出</a></h3>
+            </div>
+        </div>
+    </nav>
+    <div class="tabbable" style="padding-top: 70.6px;">
+        <ul class="nav nav-tabs nav-justified" role="tablist">
+          <li id="f1" role="presentation"><a href="{% url 'home' %}">首页</a></li>
+          <li id="f2" role="presentation"><a href="{% url 'sample' %}">打样</a></li>
+          <li id="f3" role="presentation"><a href="{% url 'project' %}">项目</a></li>
+          <li id="f4" role="presentation"><a href="{% url 'company' %}">客户</a></li>
+          <li id="f5" role="presentation"><a href="{% url 'emp' %}">员工</a></li>
+          <li id="f6" role="presentation"><a href="{% url 'chart' %}">制图文件</a></li>
+        </ul>
+    </div>
+    <script>
+    $(document).ready(function(){
+        var location_id = $('body').attr('class')
+        $('#'+location_id).addClass('select')
+    });
+    </script>
+    <style>
+        .select{
+            background-color: #2a6496;
+        }
+    </style>

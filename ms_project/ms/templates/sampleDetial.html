@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {% include 'ms/head.html' %}
+    <title>莫氏绗缝绣饰中心管理系统 - 打样详情</title>
+</head>
+<body class="f2">
+{% include 'ms/nav.html' %}{% load staticfiles %}
+<div class="panel-primary">
+    <div class="panel-heading">
+        {{ sample.company.name }} - 打样 --> [ {{ sample.name }} ]
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-2">
+                {% if sample.image %}
+                    <a href="{{ sample.image.url }}">
+                    <img src="{{ sample.image.url }}"  alt="项目原文件" class="img-thumbnail" style="width: 171px;height: 180px;">
+                    </a>
+                {% else %}
+                    <img src="{% static "img/hold.png" %}"  alt="项目原文件" class="img-thumbnail" style="width: 171px;height: 180px;">
+                {% endif %}
+            </div>
+            <div class="col-md-3">
+                <table class="table table-hover">
+                    <tr>
+                        <th>公司</th>
+                        {% url 'sampleOfCompany' sample.company.id as sc_url %}
+                        <td><a href="{{ sc_url }}">{{ sample.company.name }}</a></td>
+                    </tr>
+                    <tr>
+                        <th>项目</th><td>{{ sample.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>联系人</th><td>{{ sample.contact.first.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>时间</th><td>{{ sample.createDate|date:'Y年m月d日' }}</td>
+                    </tr>
+                    <tr>
+                        <th>备注</th>
+                        <td>{% if sample.comment|length > 8 %}
+                                <span title="{{ sample.comment}}">{{ sample.comment|slice:"8"}}...</span>
+                            {% else %}
+                                {{ sample.comment}}
+                            {% endif %}
+
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-7">
+                <div class="panel-info">
+                    <div class="panel-heading">
+                        打样明细
+                    </div>
+                    <div class="panel-body pre-scrollable">
+                        <table class="table table-hover">
+                            <thead>
+                            <th>花型名称</th><th>布料颜色</th><th>打样米数</th><th>棉类型</th><th>加工机器</th><th>备注</th>
+                            </thead>
+                            <tbody>
+                            {% for s in sample.sampleMap.all %}
+                                <tr>
+                                    <td>{% url 'chartDetial' s.flower.id as af_url %}
+                                        <a href="{{ af_url }}">{{ s.flower.name }}</a></td>
+                                    <td>{{ s.color }}</td>
+                                    <td>{{ s.length }}</td>
+                                    <td>{{ s.cottonName }}  {{ s.cottonWeight }} 克</td>
+                                    <td>{{ s.machine.name }}</td>
+                                    <td>
+                                        {% if s.comment|length > 8 %}
+                                        <span title="{{ s.comment}}">{{ s.comment|slice:"8"}}...</span>
+                                        {% else %}
+                                            {{ s.comment}}
+                                        {% endif %}
+                                        </td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

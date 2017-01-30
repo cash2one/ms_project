@@ -1,0 +1,48 @@
+<div class="panel panel-primary" style="height: 500px;">
+  <div class="panel-heading">雇员列表</div>
+  <div class="panel-body" >
+        <div class="row">{% load mytags %}
+            <div class="col-md-2 column pre-scrollable">
+                <table class="table table-hover">
+                    {% for emp in emp_list %}
+                    <tr>{% url 'empDetial' emp.id as emp_url %}
+                        <td><a href="{{ emp_url }}">{{ emp.name }}</a></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="col-md-10 column">
+                <div class="col-md-12 column">
+                    <div class="btn-group btn-group-md">
+                        <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-align-left"></em><a href="admin/ms/record/add"> 添加工作记录</a></button>
+                        <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-align-left"></em><a href="admin/ms/record"> 查询工作记录</a></button>
+                        <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-align-left"></em> 统计报告</button>
+                    </div>
+                </div>
+                <div class="col-md-12 column pre-scrollable">
+                    <table class="table table-hover">
+                        <thead>
+                            <th>名字</th><th>上班时间</th><th>下班时间</th><th>工作时长</th><th>项目</th><th>日产量</th><th>备注</th>
+                        </thead>
+                        {% for record in record_list %}
+                            <tr>{% url 'admin:ms_record_change' record.id as change_record_url %}
+                                <td><a href='{{ change_record_url}}'>{{ record.emp }}</a></td><td>{{ record.inTime|date:'Y年m月d日 H:i' }}</td><td>{{ record.outTime|date:'Y年m月d日 H:i' }}</td>
+                                <td>{{ record.workHour }}</td>
+                                {% url 'projectDetial' record.project.id as rpi_url %}
+                                <td><a href="{{ rpi_url }}">{{ record.project }}</a></td>
+                                <td>{{ record.produce }}</td>
+                                <td title="{{ record.comment }}">{{ record.comment| truncate_chars:'8' }}</td>
+                            </tr>
+                        {% endfor %}
+
+                    </table>
+                </div>
+
+
+
+            </div>
+        </div>
+
+
+  </div>
+</div>

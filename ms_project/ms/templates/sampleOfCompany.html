@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {% include 'ms/head.html' %}
+    <title>莫氏绗缝绣饰中心管理系统 - 打样</title>
+    <style>
+        #table td,th{
+            vertical-align:middle;
+            text-align:center;
+        }
+    </style>
+
+</head>
+<body class="f2">
+{% include 'ms/nav.html' %}
+<div class="panel-primary">
+    <div class="panel-heading">
+        {{ company.name }} - 打样
+    </div>
+    <div class="panel-body">
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="panel-info">
+                    <div class="panel-heading">
+                        历史打样列表 <span>{{ sample_list|length }}</span>
+                    </div>
+                    <div id="table" class="panel-body pre-scrollable">
+                        <table class="table table-hover">
+                            <thead>
+                            <th>编号</th><th>日期</th><th>名称</th><th>联系人</th><th>加工方式</th>
+                            </thead>
+                            <tbody>
+                                {% for s in sample_list %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ s.createDate|date:'Y年m月d日' }}</td>
+                                    <td>{% url 'sampleDetial' s.id as sd_url %}
+                                        <a href="{{ sd_url }}">{{ s.name }}</a></td>
+                                    <td>{{ s.contact.first.name }}</td>
+                                    <td>
+                                    <table class="table table-hover">
+                                        <tbody>
+                                            {% for sm in s.sampleMap.all %}
+                                            <tr>
+                                                <th>花型</th>
+                                                {% url 'chartDetial' sm.flower.id as sf_url %}
+                                                <td><a href="{{ sf_url }}">{{ sm.flower.name }}</a></td>
+                                                <th>棉类型</th>
+                                                <td>{{ sm.cottonName }} | {{ sm.cottonWeight }} g</td>
+                                                <th>加工机器</th>
+                                                <td>{{ sm.machine.name }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

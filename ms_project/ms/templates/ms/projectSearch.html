@@ -1,0 +1,27 @@
+
+                <div class="navbar navbar-default" role="navigation">
+                    <div class="navbar-header">
+                        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+                        <a class="navbar-brand" href="#">项目搜索</a>
+
+                    </div>
+                    <div class="collapse navbar-collapse" >
+
+                    <form action="company" class="navbar-form navbar-left" role="search" method="post">
+						<div class="form-group">
+							<input name="company_name" class="form-control" type="text" placeholder="公司名称"/>
+                            <input name="project_name" class="form-control" type="text" placeholder="项目名称"/>
+                            <select name="project_is_finish" class="selectpicker show-tick" data-width="auto">
+                              <option value="0">未完成</option>
+                              <option value="1">已完成</option>
+                            </select>
+                            <select name="project_is_close" class="selectpicker show-tick" data-width="auto">
+                              <option value="0">未结算</option>
+                              <option value="1">已结算</option>
+                            </select>
+						</div>
+                        <button class="btn btn-primary" type="submit">搜索</button>
+					</form>
+
+                    </div>
+                </div>

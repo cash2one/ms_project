@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {% include 'ms/head.html' %}
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+<style>
+    td,th{
+        vertical-align:middle;
+        text-align:center;
+    }
+
+</style>
+<script>
+     $('input').attr('autocomplete','off')
+</script>
+</head>
+<body>
+{% load mytags %}
+{% include 'ms/nav.html' %}
+
+{% block context %}
+{% endblock %}
+
+</body>
+</html>

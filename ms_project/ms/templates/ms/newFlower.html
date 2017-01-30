@@ -1,0 +1,76 @@
+<div class="panel-info">
+    {% if message_flower %}
+    {% if message_flower.success %}
+        <div class="alert alert-success">
+            {{ message_flower.success }}
+        </div>
+    {% endif %}
+    {% if message_flower.error %}
+        <div class="alert alert-danger">
+            {{ message_flower.error }}
+        </div>
+    {% endif %}
+    {% endif %}
+
+
+    <form action="createFlower" method="post" enctype="multipart/form-data" >
+    <div class="panel-body">
+        <div class="row">
+                <div class="col-md-4">
+                   <div class="input-group">
+                      <span class="input-group-addon">
+                        花型名称
+                      </span>
+                      <input id="flower_name" type="text" name="flower_name" class="form-control" placeholder="花型名称" required>
+                    </div>
+                </div>
+        </div>
+        <br>
+        <div class="row">
+                <div class="col-md-4">
+                   <div class="input-group">
+                      <span class="input-group-addon">
+                        花型备注
+                      </span>
+                      <input id="flower_comment" type="text" name="flower_comment" class="form-control" placeholder="花型备注" >
+                    </div>
+                </div>
+        </div>
+        <br>
+        <div class="row">
+                <div class="col-md-4">
+                   <div class="input-group">
+                      <span class="input-group-addon">
+                        花型图片
+                      </span>
+                      <input id="flower_image" type="file" name="flower_image" class="form-control" >
+                    </div>
+                </div>
+        </div>
+        <br>
+        <div class="row">
+                <div class="col-md-4">
+                   <div class="input-group">
+                      <span class="input-group-addon">
+                        花型文件
+                      </span>
+                      <input id="flower_file" type="file" name="flower_file" class="form-control" >
+                    </div>
+                </div>
+        </div>
+        <br>
+        <div class="row">
+                <div class="col-md-4">
+                   <div class="input-group">
+                      <input type="submit" class="btn btn-primary" value="新建花型" class="form-control" >
+                    </div>
+                </div>
+        </div>
+
+
+        </div>
+        </form>
+    </div>
+<script>
+     $('input').attr('autocomplete','off')
+</script>

@@ -1,0 +1,79 @@
+<div class="panel-info">
+{% if message_contact %}
+    {% if message_contact.success %}
+        <div class="alert alert-success">
+            {{ message_contact.success }}
+        </div>
+    {% endif %}
+    {% if message_contact.error %}
+        <div class="alert alert-danger">
+            {{ message_contact.error }}
+        </div>
+    {% endif %}
+{% endif %}
+<form action="createContact" method="post">
+    <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4">
+                   <div class="input-group">
+                      <span class="input-group-addon">
+                         姓名
+                      </span>
+                      <input id="contact_name" type="text" name="contact_name" class="form-control" placeholder="姓名" required>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-4">
+                   <div class="input-group">
+                      <span class="input-group-addon">
+                         电话
+                      </span>
+                      <input id="contact_phone" type="text" name="contact_phone" class="form-control" placeholder="电话">
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-4">
+                   <div class="input-group">
+                      <span class="input-group-addon">
+                         邮箱
+                      </span>
+                      <input id="contact_email" type="email" name="contact_email" class="form-control" placeholder="邮箱">
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-4">
+                   <div class="input-group">
+                      <span class="input-group-addon">
+                        所属公司
+                      </span>
+                      <select id="contact_company" class="selectpicker" data-live-search="true" name="contact_company">
+                                {% for c in company_list %}
+                                    <option value="{{ c.id }}">{{ c.name }}</option>
+                                {% endfor %}
+                      </select>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-4">
+                        <input type="submit" value="新建联系人" class="btn-primary btn">
+                </div>
+            </div>
+    </div>
+</form>
+</div>
+<script>
+
+
+$(document).ready(function(){
+    $('input').attr('autocomplete','off')
+});
+
+</script>

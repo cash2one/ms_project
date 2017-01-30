@@ -1,0 +1,67 @@
+{% extends 'myBase.html' %}
+
+{% block title %}
+    莫氏绗缝绣饰中心管理系统 - 发货单列表
+{% endblock %}
+
+{% block context %}
+<div class="panel-info">
+<div class="panel-body">
+    <div class="row">
+        <form id="searchForm" action="searchDelivery" method="post">
+                <div class="col-md-offset-3 col-md-6">
+                   <div class="input-group">
+                      <input autocomplete="off" id="delivery_search" type="text" name="delivery_search" class="form-control" value="{{ delivery_search }}">
+                       <span id='search_submit' class="input-group-addon btn-info btn" onclick="submitForm()">
+                          搜索 发货单
+                      </span>
+                    </div>
+                </div>
+        </form>
+        <script>
+            function submitForm() {
+                $('#searchForm').submit()
+            }
+        </script>
+    </div>
+    <br>
+    <div class="row">
+        <div class="panel-info">
+            <div class="panel-body">
+                <table class="table table-hover">
+                    <thead>
+                        <th>序号</th><th>公司</th><th>项目</th><th>缸号</th><th>颜色</th><th>米数</th><th>发货日期</th><th>发货单</th><th>备注</th>
+                    </thead>
+                    <tbody>
+                    {% for d in deliveryList %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            {% url 'companyDetial' d.project.company.id as dpci_url%}
+                            <td><a href="{{ dpci_url }}">{{ d.project.company.name }}</a></td>
+                            {% url 'projectDetial'  d.project.id as dpi_url%}
+                            <td><a href="{{ dpi_url }}">{{ d.project.name }}</a></td>
+                            <td>{{ d.num }}</td>
+                            <td>{{ d.color }}</td>
+                            <td>{{ d.length }}</td>
+                            <td>{{ d.outDate|date:'Y年m月d日' }}</td>
+                            <td>
+                                {% if d.image %}
+                                    <a href="{{ d.image.url }}">发货单</a>
+                                {% else %}
+                                    <a href="#">无发货单</a>
+                                {% endif %}
+
+                            </td>
+                            <td title="{{ d.comment }}">{{ d.comment|truncatechars:'8' }}</td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}

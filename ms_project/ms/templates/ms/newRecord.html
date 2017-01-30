@@ -1,0 +1,172 @@
+<div class="panel-info">
+{% if message_emp %}
+    {% if message_emp.success %}
+        <div class="alert alert-success">
+            {{ message_emp.success }}
+        </div>
+    {% endif %}
+    {% if message_emp.error %}
+        <div class="alert alert-danger">
+            {{ message_emp.error }}
+        </div>
+    {% endif %}
+{% endif %}
+    <form action="createEmpRecord" method="post">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4">
+                   <div class="input-group">
+                      <span class="input-group-addon">
+                         员工姓名
+                      </span>
+                      <select class="selectpicker" data-live-search="true" name="emp_name">
+                                {% for c in emp_list %}
+                                    <option value="{{ c.id }}">{{ c.name }}</option>
+                                {% endfor %}
+                      </select>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-4">
+                   <div class="input-group">
+                      <span class="input-group-addon">
+                         公司名称
+                      </span>
+                      <select class="selectpicker" data-live-search="true" name="emp_company">
+                                {% for c in company_list %}
+                                    <option value="{{ c.id }}">{{ c.name }}</option>
+                                {% endfor %}
+                      </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                   <div class="input-group">
+                      <span class="input-group-addon">
+                         项目名称
+                      </span>
+                      <select class="selectpicker" data-live-search="true" name="emp_project">
+                                {% for c in project_list %}
+                                    <option value="{{ c.id }}">{{ c.name }}-{{ c.company.name|truncatechars:7 }}</option>
+                                {% endfor %}
+                      </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                         日产量
+                        </span>
+                        <input type="text" class="form-control" name="emp_produce" required>
+                        <span class="input-group-addon">
+                         米
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                上班时间
+                            </span>
+                            <div class="input-append date" id="emp_in_datetimepicker" data-date-format="yyyy-mm-dd hh:ii">
+                                <input id="emp_inTime" name="emp_inTime" class="form-control" type="text" autocomplete="off" required>
+                                <span class="add-on"><i class="icon-remove"></i></span>
+                                <span class="add-on"><i class="icon-th"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                下班时间
+                            </span>
+                            <div class="input-append date" id="emp_out_datetimepicker" data-date-format="yyyy-mm-dd">
+                                <input id="emp_outTime" name="emp_outTime" class="form-control" type="text" autocomplete="off" required>
+                                <span class="add-on"><i class="icon-remove"></i></span>
+                                <span class="add-on"><i class="icon-th"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                工作时长
+                            </span>
+                            <input id="emp_hours" type="text" name="emp_hours" class="form-control" disabled>
+                            <span class="input-group-addon">小时</span>
+                        </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                备注
+                            </span>
+                            <input type="text" name="emp_comment" class="form-control" placeholder="备注" >
+                        </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-4">
+                        <input type="submit" value="添加工作记录" class="btn-primary btn">
+                </div>
+            </div>
+
+
+
+        </div>
+    </form>
+</div>
+
+<script>
+     $('input').attr('autocomplete','off')
+</script>
+<script>
+    $('#emp_in_datetimepicker').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii',
+        minView:'0',
+        language: 'zh-CN',
+        autoclose:false,
+        todayHighlight:true,
+        todayBtn:true,
+        initialDate:new Date()
+    });
+        $('#emp_out_datetimepicker').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii',
+        minView:'0',
+        language: 'zh-CN',
+        autoclose:false,
+        todayHighlight:true,
+        todayBtn:true,
+        initialDate :new Date()
+    });
+$(document).ready(function(){
+  $("#emp_inTime").change(function(){
+      var inTime = $('#emp_inTime').val()
+      var outTime = $('#emp_outTime').val()
+      if(inTime && outTime){
+          var hours = parseInt(new Date(outTime) - new Date(inTime)) / 1000 / 3600;
+          $('#emp_hours').val(hours)
+      }
+
+
+  });
+   $("#emp_outTime").change(function(){
+      var inTime = $('#emp_inTime').val()
+      var outTime = $('#emp_outTime').val()
+      if(inTime && outTime){
+          var hours = parseInt(new Date(outTime) - new Date(inTime)) / 1000 / 3600;
+          $('#emp_hours').val(hours)
+      }
+
+
+  });
+});
+</script>

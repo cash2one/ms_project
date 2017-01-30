@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+        {% include 'ms/head.html' %}
+		<title>莫氏绗缝绣饰中心管理系统</title>
+        <style>
+            .form-signin{
+                max-width: 390px;
+                padding: 15px;
+                padding-top: 100px;
+                margin: 0 auto;
+            }
+            .head{
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        </style>
+	</head>
+	<body>
+	<div class="container-fluid">
+
+		<div id="form_action">
+			<form action="login" class="form-signin" role="form" method="post">
+                <div class="btn btn-primary btn-lg active head">莫氏绗缝绣饰中心管理系统</div>
+				<div class="form-group">
+    				<input type="text" class="form-control" name="name" id="name" placeholder="用户名" required>
+  				</div>
+  				<div class="form-group">
+    				<input type="password" class="form-control" name="password" id="password" placeholder="密码" required>
+  				</div>
+			<center><button type="submit" class="btn btn-primary" style="">登陆</button></center>
+			
+			</form>
+		</div>
+	</div>
+	</body>
+</html>

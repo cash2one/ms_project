@@ -1,0 +1,160 @@
+<div class="panel-info">
+{% if message_cotton %}
+    {% if message_cotton.success %}
+        <div class="alert alert-success">
+            {{ message_cotton.success }}
+        </div>
+    {% endif %}
+    {% if message_cotton.error %}
+        <div class="alert alert-danger">
+            {{ message_cotton.error }}
+        </div>
+    {% endif %}
+{% endif %}
+    <div class="panel-body">
+        <form action="createCotton" method="post" enctype="multipart/form-data">
+        <div class="row">
+                <div class="col-md-4">
+                   <div class="input-group">
+                      <span class="input-group-addon">
+                         公司名称
+                      </span>
+                      <select class="selectpicker" data-live-search="true" name="cotton_company">
+                                {% for c in company_list %}
+                                    <option value="{{ c.id }}">{{ c.name }}</option>
+                                {% endfor %}
+                      </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                   <div class="input-group">
+                      <span class="input-group-addon">
+                         项目名称
+                      </span>
+                      <select class="selectpicker" data-live-search="true" name="cotton_project">
+                                {% for c in project_list %}
+                                    <option value="{{ c.id }}">{{ c.name }} - - {{ c.company.name }}</option>
+                                {% endfor %}
+                      </select>
+                    </div>
+                </div>
+        </div>
+        <br>
+        <div class="row">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                创建时间
+                            </span>
+                            <div class="input-append date" id="cotton_datetimepicker" data-date-format="yyyy-mm-dd">
+                                <input name="cotton_inTime" class="form-control" type="text" autocomplete="off" required>
+                                <span class="add-on"><i class="icon-remove"></i></span>
+                                <span class="add-on"><i class="icon-th"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                项目原文件
+                            </span>
+                            <input type="file" name="cotton_image" class="form-control" placeholder="项目原文件">
+                        </div>
+                    </div>
+        </div>
+        <br>
+        <div class="row">
+            <table class="table table-hover">
+                <thead>
+                <th>棉类型</th><th>棉重量</th><th>棉宽度</th><th>棉长度</th><th>备注</th>
+                </thead>
+                <thead>
+                <tr>
+                    <td>
+                        <input type="text" class="form-control" name="cotton_name_1" placeholder="棉类型">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="cotton_weight_1" placeholder="棉重量">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="cotton_width_1" value="1.5">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="cotton_length_1" placeholder="棉长度">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="cotton_comment_1" placeholder="备注">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" class="form-control" name="cotton_name_2" placeholder="棉类型">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="cotton_weight_2" placeholder="棉重量">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="cotton_width_2" value="1.5">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="cotton_length_2" placeholder="棉长度">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="cotton_comment_2" placeholder="备注">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" class="form-control" name="cotton_name_3" placeholder="棉类型">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="cotton_weight_3" placeholder="棉重量">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="cotton_width_3" value="1.5">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="cotton_length_3" placeholder="棉长度">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="cotton_comment_3" placeholder="备注">
+                    </td>
+                </tr>
+                </thead>
+            </table>
+
+        </div>
+        <div class="row">
+                    <div>
+                        <input type="submit" value="创建棉收货单" class="btn-primary btn">
+                    </div>
+            </div>
+
+        </form>
+    </div>
+
+
+</div>
+<style>
+    td,th{
+        vertical-align:middle;
+        text-align:center;
+    }
+
+
+</style>
+<script>
+     $('input').attr('autocomplete','off')
+</script>
+<script>
+    $('#cotton_datetimepicker').datetimepicker({
+        format: 'yyyy-mm-dd',
+        minView:'month',
+        language: 'zh-CN',
+        autoclose:true,
+        todayHighlight:true,
+        todayBtn:true,
+        initialDate:new Date()
+    });
+
+</script>

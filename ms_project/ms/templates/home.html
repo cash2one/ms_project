@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {% include 'ms/head.html' %}
+    <title>莫氏绗缝绣饰中心管理系统 - 首页</title>
+</head>
+<body class="f1">
+{% include 'ms/nav.html' %}
+<div class="panel-primary">
+
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a href="{% url 'deliveryList'%}" >
+                                发货单列表
+                                </a>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a href="{% url 'materialList'%}">
+                                布料收货单列表
+                                </a>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a href="{% url 'cottonList'%}">
+                                棉收货单列表
+                                </a>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#coll_project" aria-expanded="true" aria-controls="collapseOne">
+                                正在进行中的项目   <span class="label label-info">{{ project_list|length }}</span>
+                                </a>
+                            </h4>
+                        </div>
+                    </div>
+                    <div id="coll_project" class="panel-collapse collapse in"
+                         role="tabpanel" aria-labelledby="headingOne">
+
+
+                            <div class="panel-info">
+                            <table class="table">
+                                {% for p in project_list %}
+                                <tr class="row">
+                                   <td class="col-md-6">
+                                       {% url 'companyDetial' p.company.id as pci_url %}
+                                        <a href="{{ pci_url }}">{{ p.company.name }}</a>
+                                   </td>
+                                    <td class="col-md-6">
+                                        {% url 'projectDetial' p.id as p_url%}
+                                    <a href="{{ p_url }}">{{ p.name }}</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                            </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-9">
+                <ul class="nav nav-tabs" role="tablist">
+                    {% if message_company %}
+                        <li role="presentation" class="active"><a href="#customer" role="tab" data-toggle="tab">新公司</a></li>
+                    {% elif not tag%}
+                        <li role="presentation" class="active"><a href="#customer" role="tab" data-toggle="tab">新公司</a></li>
+                    {% else %}
+                        <li role="presentation"><a href="#customer" role="tab" data-toggle="tab">新公司</a></li>
+                    {% endif %}
+
+                    {% if message_contact %}
+                        <li role="presentation" class="active"><a href="#contact" role="tab" data-toggle="tab">新联系人</a></li>
+                    {% else %}
+                        <li role="presentation"><a href="#contact" role="tab" data-toggle="tab">新联系人</a></li>
+                    {% endif %}
+                    {% if message_flower %}
+                        <li role="presentation" class="active" ><a href="#flower" role="tab" data-toggle="tab">新制图</a></li>
+                    {% else %}
+                        <li role="presentation"><a href="#flower" role="tab" data-toggle="tab">新制图</a></li>
+                    {% endif %}
+                    {% if message_flower %}
+                        <li role="presentation" class="active"><a href="#sample" role="tab" data-toggle="tab">新打样</a></li>
+                    {% else %}
+                        <li role="presentation"><a href="#sample" role="tab" data-toggle="tab">新打样</a></li>
+                    {% endif %}
+                    {% if message_project %}
+                        <li role="presentation" class="active"><a href="#project" role="tab" data-toggle="tab">新项目</a></li>
+                    {% else %}
+                        <li role="presentation"><a href="#project" role="tab" data-toggle="tab">新项目</a></li>
+                    {% endif %}
+                    {% if message_delivery %}
+                        <li role="presentation" class="active" ><a href="#produce" role="tab" data-toggle="tab">发货单</a></li>
+                    {% else %}
+                        <li role="presentation"><a href="#produce" role="tab" data-toggle="tab">发货单</a></li>
+                    {% endif %}
+                    {% if message_material %}
+                        <li role="presentation" class="active" ><a href="#material-receive" role="tab" data-toggle="tab">布料收货单</a></li>
+                    {% else %}
+                        <li role="presentation"><a href="#material-receive" role="tab" data-toggle="tab">布料收货单</a></li>
+                    {% endif %}
+
+                    {% if message_cotton %}
+                        <li role="presentation" class="active"><a href="#cotton-receive" role="tab" data-toggle="tab">棉收货单</a></li>
+                    {% else %}
+                        <li role="presentation"><a href="#cotton-receive" role="tab" data-toggle="tab">棉收货单</a></li>
+                    {% endif %}
+                    {% if message_emp %}
+                        <li role="presentation" class="active"><a href="#records" role="tab" data-toggle="tab">员工工作记录</a></li>
+                    {% else %}
+                        <li role="presentation"><a href="#records" role="tab" data-toggle="tab">员工工作记录</a></li>
+                    {% endif %}
+
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    {% if message_company%}
+                        <div role="tabpanel" class="tab-pane active" id="customer">
+                            {% include 'ms/newCompany.html' %}
+                        </div>
+                    {% elif not tag%}
+                        <div role="tabpanel" class="tab-pane active" id="customer">
+                            {% include 'ms/newCompany.html' %}
+                        </div>
+                    {% else %}
+                      <div role="tabpanel" class="tab-pane" id="customer">
+                            {% include 'ms/newCompany.html' %}
+                      </div>
+                    {% endif %}
+                    {% if message_contact %}
+                        <div role="tabpanel" class="tab-pane active" id="contact">
+                            {% include 'ms/newContact.html' %}
+                        </div>
+                    {% else %}
+                        <div role="tabpanel" class="tab-pane" id="contact">
+                            {% include 'ms/newContact.html' %}
+                        </div>
+                    {% endif %}
+                    {% if message_flower %}
+                        <div role="tabpanel" class="tab-pane active" id="flower">
+                            {% include 'ms/newFlower.html' %}
+                        </div>
+                    {% else %}
+                        <div role="tabpanel" class="tab-pane" id="flower">
+                            {% include 'ms/newFlower.html' %}
+                        </div>
+                    {% endif %}
+
+                      {% if message_sample %}
+                          <div role="tabpanel" class="tab-pane active" id="sample">
+                                {% include 'ms/newSample.html' %}
+                          </div>
+                      {% else %}
+                            <div role="tabpanel" class="tab-pane" id="sample">
+                            {% include 'ms/newSample.html' %}
+                            </div>
+                      {% endif %}
+
+                        {% if message_project %}
+                            <div role="tabpanel" class="tab-pane active" id="project">
+                                {% include 'ms/newProject.html' %}
+                            </div>
+                        {% else %}
+                            <div role="tabpanel" class="tab-pane" id="project">
+                                {% include 'ms/newProject.html' %}
+                            </div>
+                        {% endif %}
+                        {% if message_delivery %}
+                            <div role="tabpanel" class="tab-pane active" id="produce">
+                                {% include 'ms/newDelivery.html' %}
+                            </div>
+                        {% else %}
+                            <div role="tabpanel" class="tab-pane" id="produce">
+                                {% include 'ms/newDelivery.html' %}
+                            </div>
+                        {% endif %}
+                        {% if message_material %}
+                            <div role="tabpanel" class="tab-pane active" id="material-receive">
+                                {% include 'ms/newMaterial.html' %}
+                            </div>
+                        {% else %}
+                            <div role="tabpanel" class="tab-pane" id="material-receive">
+                                {% include 'ms/newMaterial.html' %}
+                            </div>
+                        {% endif %}
+                        {% if message_cotton %}
+                            <div role="tabpanel" class="tab-pane active" id="cotton-receive">
+                                {% include 'ms/newCotton.html' %}
+                            </div>
+                        {% else %}
+                            <div role="tabpanel" class="tab-pane" id="cotton-receive">
+                                {% include 'ms/newCotton.html' %}
+                            </div>
+                        {% endif %}
+                        {% if message_emp %}
+                            <div role="tabpanel" class="tab-pane active" id="records">
+                                    {% include 'ms/newRecord.html' %}
+                            </div>
+                        {% else %}
+                            <div role="tabpanel" class="tab-pane" id="records">
+                                {% include 'ms/newRecord.html' %}
+                            </div>
+                        {% endif %}
+
+                </div>
+            </div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+    </div>
+</div>
+
+</body>
+</html>

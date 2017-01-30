@@ -1,0 +1,8 @@
+
+                <table class="table table-hover">
+                    {% for company in company_list %}
+                    <tr>{% url 'companyDetial' company.id as company_url %}
+                        <td><a href="{{ company_url }}">{{ company.name }}</a></td>
+                    </tr>
+                    {% endfor %}
+                </table>

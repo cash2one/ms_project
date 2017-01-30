@@ -1,0 +1,335 @@
+<div class="panel-info">
+{% if message_sample %}
+    {% if message_sample.success %}
+        <div class="alert alert-success">
+            {{ message_sample.success }}
+        </div>
+    {% endif %}
+    {% if message_sample.error %}
+        <div class="alert alert-danger">
+            {{ message_sample.error }}
+        </div>
+    {% endif %}
+{% endif %}
+<form action="createSample" role="form" enctype="multipart/form-data" method="post">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                公司名称
+                            </span>
+                            <select class="selectpicker" data-live-search="true" name="sample_company">
+                                {% for c in company_list %}
+                                    <option value="{{ c.id }}">{{ c.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                项目名称
+                            </span>
+                            <input type="text" class="form-control" placeholder="项目名称"  autocomplete="off" name="sample_name" >
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                项目联系人
+                            </span>
+                            <select class="selectpicker" data-live-search="true" name="sample_contact">
+                                {% for c in contact_list %}
+                                    <option value="{{ c.id }}">{{ c.name }} - {{ c.company.name }} </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div><br>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                创建时间
+                            </span>
+                            <div class="input-append date" id="datetimepicker" data-date-format="yyyy-mm-dd">
+                                <input name="sample_createDate" class="form-control" type="text" autocomplete="off" required>
+                                <span class="add-on"><i class="icon-remove"></i></span>
+                                <span class="add-on"><i class="icon-th"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                项目原文件
+                            </span>
+                            <input type="file" name="sample_image" class="form-control" placeholder="项目原文件">
+                        </div>
+                    </div>
+                </div><br>
+                <div class="row">
+                     <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                项目备注
+                            </span>
+                            <input type="text" name="sample_comment" class="form-control" placeholder="项目备注">
+                        </div>
+                    </div>
+                </div><br>
+                <div class="row" style="border: dashed; border-color: #2a6496;">
+                    <div class="panel-info">
+                        <div class="panel-body">
+                            <div class="row">
+                                 <div class="col-md-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            布料颜色
+                                        </span>
+                                        <input type="text" name="color_1" class="form-control" placeholder="布料颜色">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            布料米数
+                                        </span>
+                                        <input type="text" name="length_1" class="form-control" placeholder="布料米数">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            棉类型
+                                        </span>
+                                        <input type="text" name="cottonName_1" class="form-control" placeholder="棉类型">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            棉重量
+                                        </span>
+                                        <input type="text" name="cottonWeight_1" class="form-control" placeholder="棉重量">
+                                    </div>
+                                </div>
+                            </div><br>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            加工机器
+                                        </span>
+                                        <select class="selectpicker" data-live-search="true" name="machine_1">
+                                            {% for c in machine_list %}
+                                                <option value="{{ c.id }}">{{ c.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            花型
+                                        </span>
+                                        <select class="selectpicker" data-live-search="true" name="flower_1">
+                                            {% for c in flower_list %}
+                                                <option value="{{ c.id }}">{{ c.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            备注
+                                        </span>
+                                        <input type="text" name="comment_1" class="form-control" placeholder="备注">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><br>
+
+                <div class="row" style="border: dashed; border-color: #2a6496;">
+                    <div class="panel-info">
+                        <div class="panel-body">
+                            <div class="row">
+                                 <div class="col-md-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            布料颜色
+                                        </span>
+                                        <input type="text" name="color_2" class="form-control" placeholder="布料颜色">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            布料米数
+                                        </span>
+                                        <input type="text" name="length_2" class="form-control" placeholder="布料米数">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            棉类型
+                                        </span>
+                                        <input type="text" name="cottonName_2" class="form-control" placeholder="棉类型">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            棉重量
+                                        </span>
+                                        <input type="text" name="cottonWeight_2" class="form-control" placeholder="棉重量">
+                                    </div>
+                                </div>
+                            </div><br>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            加工机器
+                                        </span>
+                                        <select class="selectpicker" data-live-search="true" name="machine_2">
+                                            {% for c in machine_list %}
+                                                <option value="{{ c.id }}">{{ c.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            花型
+                                        </span>
+                                        <select class="selectpicker" data-live-search="true" name="flower_2">
+                                            {% for c in flower_list %}
+                                                <option value="{{ c.id }}">{{ c.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            备注
+                                        </span>
+                                        <input type="text" name="comment_2" class="form-control" placeholder="备注">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><br>
+
+                <div class="row" style="border: dashed; border-color: #2a6496;">
+                    <div class="panel-info">
+                        <div class="panel-body">
+                            <div class="row">
+                                 <div class="col-md-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            布料颜色
+                                        </span>
+                                        <input type="text" name="color_3" class="form-control" placeholder="布料颜色">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            布料米数
+                                        </span>
+                                        <input type="text" name="length_3" class="form-control" placeholder="布料米数">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            棉类型
+                                        </span>
+                                        <input type="text" name="cottonName_3" class="form-control" placeholder="棉类型">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            棉重量
+                                        </span>
+                                        <input type="text" name="cottonWeight_3" class="form-control" placeholder="棉重量">
+                                    </div>
+                                </div>
+                            </div><br>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            加工机器
+                                        </span>
+                                        <select class="selectpicker" data-live-search="true" name="machine_3">
+                                            {% for c in machine_list %}
+                                                <option value="{{ c.id }}">{{ c.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            花型
+                                        </span>
+                                        <select class="selectpicker" data-live-search="true" name="flower_3">
+                                            {% for c in flower_list %}
+                                                <option value="{{ c.id }}">{{ c.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            备注
+                                        </span>
+                                        <input type="text" name="comment_3" class="form-control" placeholder="备注">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><br>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <input type="submit" value="创建新打样" class="btn-primary btn">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</form>
+</div>
+<script>
+    $('#datetimepicker').datetimepicker({
+        format: 'yyyy-mm-dd',
+        minView:'month',
+        language: 'zh-CN',
+        autoclose:true,
+        todayHighlight:true,
+        todayBtn:true,
+        initialDate:new Date()
+    });
+</script>
+<script>
+     $('input').attr('autocomplete','off')
+</script>

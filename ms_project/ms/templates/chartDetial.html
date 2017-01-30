@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {% include 'ms/head.html' %}{% load staticfiles %}
+    <title>莫氏绗缝绣饰中心管理系统 - 花型详情</title>
+    <style>
+        #table td,th{
+            vertical-align:middle;
+            text-align:center;
+        }
+    </style>
+</head>
+<body class="f6">
+{% include 'ms/nav.html' %}
+
+<div class="panel-info">
+    <div class="panel-heading">
+        <span>花型名称： </span>{{ chart.name }}
+    </div>
+    <div class="panel-body">
+        <div class="row" style="height: 230px;">
+            <div class="col-md-2">
+                        {% if chart.image %}
+                            <a href="{{ chart.image.url }}" class="thumbnail" style="width: 171px;height: 180px;">
+                            <img src="{{ chart.image.url }}"  alt="项目原文件" style="width: 171px;height: 180px;">
+                            </a>
+                        {% endif %}
+                        {% if not chart.image %}
+                            <img src="{% static "img/hold.png" %}"  alt="项目原文件" style="width: 171px;height: 180px;">
+                        {% endif %}
+            </div>
+            <div class="col-md-3">
+                <table class="table table-hover">
+                    <tr>
+                        <th style="vertical-align:middle; text-align:center;">名称</th>
+                        <td style="vertical-align:middle; text-align:center;">{{ chart.name }}</td>
+
+                    </tr>
+                    <tr>
+                        <th style="vertical-align:middle; text-align:center;">文件</th>
+                        <td style="vertical-align:middle; text-align:center;">
+                            {% if chart.dstfile %}
+                            <a href="/media/{{ chart.dstfile }}">{{ chart.fileName }}</a>
+                            {% else %}
+                            <a href="">缺少文件</a>
+                            {% endif %}
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th style="vertical-align:middle; text-align:center;">备注</th>
+                        <td style="vertical-align:middle; text-align:center;">
+                            {% if chart.comment|length > 8 %}
+                                <span id="comment" data-toggle="tooltip" data-placement="bottom" title="{{ chart.comment}}">{{ chart.comment|slice:"8"}}...</span>
+                            {% else %}
+                                {{ chart.comment}}
+                            {% endif %}</td>
+
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-7" style="height: 230px;">
+                <div class="panel-success" style="height: 230px;">
+                    <div class="panel-heading">
+                        <span>关联项目列表 </span><span class="label label-success">{{ projectList|length }}</span>
+                    </div>
+                    <div class="panel-body pre-scrollable" style="height: 180px;">
+                        <table class="table table-hover">
+                            <thead>
+                                <th>日期</th><th>公司</th><th>项目</th><th>联系人</th>
+                            </thead>
+                            <tbody>
+                            {% for p in projectList %}
+                                <tr>
+                                    <td>{{ p.createDate|date:'Y/m/d' }}</td>
+                                    {% url 'companyDetial' p.company.id as  companyDetial_url%}
+                                    <td><a href="{{ companyDetial_url }}">{{ p.company.name }}</a></td>
+                                    {% url 'projectDetial' p.id as  projectDetial_url%}
+                                    <td><a href="{{ projectDetial_url }}">{{ p.name }}</a></td>
+                                    <td><span title="联系电话： {{ p.contact.first.phone }}">{{ p.contact.first.name }}</span></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="panel-info">
+                <div class="panel-heading">
+                    相关打样列表 <span class="label label-success"> {{ sample_list|length }}</span>
+                </div>
+                <div class="panel-body pre-scrollable" id="table">
+                    <table class="table table-hover">
+                    <thead>
+                    <th>编号</th><th>日期</th><th>公司</th><th>名称</th><th>联系人</th><th>加工方式</th>
+                    </thead>
+                    {% for s in sample_list %}
+                        <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ s.createDate|date:'Y年m月d日' }}</td>
+                        <td>{% url 'sampleOfCompany' s.company.id as sc_url %}
+                            <a href="{{ sc_url }}">{{ s.company.name }}</a></td>
+                        <td>{% url 'sampleDetial' s.id as sd_url %}
+                        <a href="{{ sd_url }}">{{ s.name }}</a>
+                        </td>
+                        <td>{{ s.contact.first.name }}</td>
+                        <td>
+                            <table class="table table-hover">
+                                        <tbody>
+                                            {% for sm in s.sampleMap.all %}
+                                            <tr>
+                                                <th>花型</th>
+                                                {% url 'chartDetial' sm.flower.id as sf_url %}
+                                                <td><a href="{{ sf_url }}">{{ sm.flower.name }}</a></td>
+                                                <th>棉类型</th>
+                                                <td>{{ sm.cottonName }} | {{ sm.cottonWeight }} g</td>
+                                                <th>加工机器</th>
+                                                <td>{{ sm.machine.name }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                            </table>
+                        </td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    $('#comment').tooltip('toggle')
+</script>
+</body>
+</html>

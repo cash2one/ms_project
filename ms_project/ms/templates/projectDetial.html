@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {% include 'ms/head.html' %}
+    <title>莫氏绗缝绣饰中心管理系统 - 项目详情</title>
+</head>
+<body class="f3">
+{% include 'ms/nav.html' %}{% load staticfiles %}
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h4>{{ project.company.name }}  < <small style="color: honeydew">{{ project.name }}</small> >
+    </h4>
+  </div>
+  <div class="panel-body" >
+    <div class="row" style="height: 300px;">
+        <div class="col-md-6 column" style="height: 390px;">
+            <div class="row">
+                <div class="col-md-4 column">
+
+                        {% if project.image %}
+                            <a href="{{ project.image.url }}" class="thumbnail">
+                            <img src="{{ project.image.url }}"  alt="项目原文件" style="height: 220px;width: 180px;" >
+                            </a>
+                        {% endif %}
+                        {% if not project.image %}
+                            <a href="#" class="thumbnail">
+                            <img src="{% static "img/hold.png" %}"  alt="项目原文件">
+                            </a>
+                        {% endif %}
+
+                </div>
+                <div class="col-md-8 column">
+                    <table class="table table-hover">
+                        <tbody>
+                            <tr>
+                            <th><span class="glyphicon glyphicon-tower"></span>  客户</th>
+                                <td>{% url 'companyDetial' project.company.id as  companyDetial_url%}
+                                    <a href="{{ companyDetial_url }}">{{ project.company.name }}</a>
+                                </td>
+                            </tr>
+                            <tr>
+                            <th><span class="glyphicon glyphicon-list-alt"></span>  项目</th><td>{{ project.name }}</td>
+                            </tr>
+                            <tr>
+                            <th><span class="glyphicon glyphicon-user"></span>  联系人</th><td title="联系电话： {{ project.contact.first.phone }}">{{ project.contact.first.name }}</td>
+                            </tr>
+                            <tr>
+                            <th><span class="glyphicon glyphicon-file"></span>  花型</th>
+                                {% url 'chartDetial' project.flower.id as chartDetial_url %}
+                                <td><a href="{{ chartDetial_url }}" title="{{ project.flower.comment }}">{{ project.flower.name }}</a></td>
+                            </tr>
+                            <tr>
+                            <th><span class="glyphicon glyphicon-calendar"></span>  日期</th><td>{{ project.createDate|date:'Y年m月d日' }}</td>
+                            </tr>
+                            <tr><th><span class="glyphicon glyphicon-bookmark"></span> 状态</th>
+                                <td>
+                                    {{ project.get_isFinish_display }} | {{ project.get_isClose_display }}
+                                    <span id='p_title' style="float: right;cursor:pointer;" onclick="pop()" title="{{ project.comment }}" data-toggle="tooltip" data-placement="top">
+                                        <span class="glyphicon glyphicon-info-sign"></span><strong>  备注</strong>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="row" >
+                <div class="col-md-12 column">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                           <span class="glyphicon glyphicon-tags"></span>  项目进度
+                            {% url 'outputCSV' project.id as outputCSV_url  %}
+                            <span class="pull-right"><a href="{{ outputCSV_url }}">导出项目进度CSV文件</a></span>
+                        </div>
+                        <div class="panel-body  pre-scrollable"style="height: 240px;">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>缸号</th><th>颜色</th><th>总米数</th><th>已发货量</th><th>剩余量</th><th>状态</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        {% for k, v in info_map.items %}
+                                            {% if v.last <= 0 %}
+                                            <tr class="success">
+                                            {% else %}
+                                            <tr>
+                                            {% endif %}
+
+                                            <td>{{ v.num }}</td><td>{{ v.color }}</td>
+                                            <td>{{ v.total }}</td><td>{{ v.delivery }}</td>
+                                            <td>{{ v.last }}</td>
+                                            {% if v.last <= 0 %}
+                                            <td><span class="glyphicon glyphicon-ok"></span> 已完成</td>
+                                            {% else %}
+                                            <td><span class="glyphicon glyphicon-star"></span> 未完成</td>
+                                            {% endif %}
+                                            </tr>
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 column" style="height: 550px;">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                 <span class="glyphicon glyphicon-pushpin"></span>   发货记录  <span class="label label-info">{{ delivery|length }}</span>
+                <span class="pull-right"><a style="cursor:pointer;" data-toggle="modal" data-target="#addDelivery">添加发货单</a></span>
+                </div>
+                <div class="modal fade" id="addDelivery" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                        <form action="addDelivery" class="form-horizontal" role="form" enctype="multipart/form-data" method="post">
+                        {% csrf_token %}
+                            <input type="hidden" name="projectId" value="{{ project.id }}">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="myModalLabel">加工发货单</h4>
+                                <div class="modal-body">
+
+                                        <div class="form-group">
+                                            <label for="firstname" class="col-sm-2 control-label">公司名称</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" name="companyName" class="form-control" id="companyName" value="{{ project.company.name }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="firstname" class="col-sm-2 control-label">项目名称</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" name="projectName" class="form-control" id="projectName" value="{{ project.name }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="firstname" class="col-sm-2 control-label">发货日期</label>
+                                            <div class="col-sm-10">
+                                                <div class="input-append date" id="datetimepicker_fahuo" data-date-format="yyyy-mm-dd">
+                                                    <input name="createDate" class="form-control" type="text" required>
+                                                    <span class="add-on"><i class="icon-remove"></i></span>
+                                                    <span class="add-on"><i class="icon-th"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="deliveryFile" class="col-sm-2 control-label">货单文件</label>
+                                            <div class="col-sm-10">
+                                                <input type="file" name="deliveryFile" class="form-control" id="deliveryFile" >
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="firstname" class="col-sm-2 control-label">缸号</label>
+                                            <label for="firstname" class="col-sm-3 control-label">颜色</label>
+                                            <label for="firstname" class="col-sm-3 control-label">米数</label>
+                                            <label for="firstname" class="col-sm-4 control-label">备注</label>
+                                        </div>
+                                        {% for k, v in info_map.items %}
+                                        <div class="form-group">
+                                            <div class="col-sm-2">
+                                                <input type="text" class="form-control" name="{{ v.num }}" value="{{ v.num }}" readonly>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control" value="{{ v.color }}" readonly>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control" name="{{ v.num }}-{{ v.color }}-length" placeholder="剩余{{ v.last }}" title="剩余米数：{{ v.last }}米">
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <input type="text" class="form-control" name="{{ v.num }}-{{ v.color }}-comment" >
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                    <button type="submit" class="btn btn-primary" >添加新发货单</button>
+                                </div>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body  pre-scrollable" style="height: 350px;">
+                    <table class="table table-hover">
+                        <thead>
+                            <th>日期</th><th>缸号</th><th>颜色</th><th>米数</th><th>发货单</th>
+                        </thead>
+                        <tbody>
+                            {% for a in delivery %}
+                                <tr>
+                                <td>{{ a.outDate|date:'Y-m-d' }}</td>
+                                <td>{{ a.num }}</td><td>{{ a.color }}</td><td>{{ a.length }}</td>
+                                <td>
+                                    {% if a.image %}
+                                        <a href="{{ a.image.url }}"><span class="glyphicon glyphicon-file"></span> 发货单</a>
+                                    {% endif %}
+                                    {% if not a.image %}
+                                        <a href="#"><span class="glyphicon glyphicon-remove"></span> 无发货单</a>
+                                    {% endif %}
+                                </td>
+                                </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer pre-scrollable" style="height: 150px;">
+                    <table class="table table-hover">
+                        <thead>
+                            <th>缸号-颜色</th><th>总米数</th>
+                        </thead>
+                        <tbody>
+                            {% for k,v in delivery_map.items %}
+                            <tr>
+                                <td>{{ k }}</td><td>{{ v }}</td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+	<div class="row ">
+        <div class="col-md-4 column">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                  <span class="glyphicon glyphicon-pushpin"></span>  布料详情  <span class="label label-info">{{ materials|length }}</span>
+                    <span class="pull-right"><a style="cursor:pointer;" data-toggle="modal" data-target="#addMateial">添加布料</a></span>
+                </div>
+
+            <div class="modal fade" id="addMateial" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <form action="addMaterial" class="form-horizontal" role="form" enctype="multipart/form-data" method="post">
+                    <input name="projectId" value="{{ project.id }}" hidden>
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="myModalLabel">布料进货单</h4>
+                            </div>
+                            <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="companyName" class="col-sm-2 control-label">公司名称</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" name="companyName" class="form-control" id="companyName" value="{{ project.company.name }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="projectName" class="col-sm-2 control-label">项目名称</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" name="projectName" class="form-control" id="projectName" value="{{ project.name }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="createDate" class="col-sm-2 control-label">收货日期</label>
+                                            <div class="col-sm-10">
+                                                <div class="input-append date" id="datetimepicker_souhuodan" data-date-format="yyyy-mm-dd">
+                                                    <input name="createDate" class="form-control" type="text" required>
+                                                    <span class="add-on"><i class="icon-remove"></i></span>
+                                                    <span class="add-on"><i class="icon-th"></i></span>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="materialFile" class="col-sm-2 control-label">货单文件</label>
+                                            <div class="col-sm-10">
+                                                <input type="file" name="materialFile" class="form-control" id="materialFile" >
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="num" class="col-sm-2 control-label">缸号</label>
+                                            <label for="color" class="col-sm-3 control-label">颜色</label>
+                                            <label for="length" class="col-sm-3 control-label">米数</label>
+                                            <label for="comment" class="col-sm-4 control-label">备注</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-2">
+                                                <input type="text" name="num_1" class="form-control">
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" name="color_1" class="form-control">
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" name="length_1" class="form-control">
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <input type="text" name="comment_1" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-2">
+                                                <input type="text" name="num_2" class="form-control">
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" name="color_2" class="form-control">
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" name="length_2" class="form-control">
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <input type="text" name="comment_2" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-2">
+                                                <input type="text" name="num_3" class="form-control">
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" name="color_3" class="form-control">
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" name="length_3" class="form-control">
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <input type="text" name="comment_3" class="form-control">
+                                            </div>
+                                        </div>
+
+
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                <button type="submit" class="btn btn-primary">添加新布料单</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+
+                <div class="panel-body pre-scrollable">
+                    <table class="table table-hover">
+                        <thead>
+                            <th>日期</th><th>缸号</th><th>颜色</th><th>米数</th><th>进货单</th>
+                        </thead>
+                        <tbody>
+                            {% for a in materials %}
+                                <tr>
+                                <td>{{ a.inTime|date:'Y-m-d' }}</td>
+                                <td>{{ a.num }}</td><td>{{ a.color }}</td><td>{{ a.length }}</td>
+                                <td>
+                                    {% if a.image %}
+                                         <a href="{{ a.image.url }}"><span class="glyphicon glyphicon-file"></span> 进货单</a>
+                                    {% endif %}
+                                    {% if not a.image %}
+                                         <a href="#"><span class="glyphicon glyphicon-remove"></span> 无进货单</a>
+                                    {% endif %}
+                                </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer pre-scrollable">
+                    <table class="table table-hover">
+                        <thead>
+                            <th>缸号-颜色</th><th>总米数</th>
+                        </thead>
+                        <tbody>
+                            {% for k,v in material_map.items %}
+                            <tr>
+                                <td>{{ k }}</td><td>{{ v }}</td>
+                            </tr>
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+		<div class="col-md-4 column">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                 <span class="glyphicon glyphicon-pushpin"></span>   棉详情  <span class="label label-info">{{ cottons|length }}</span>
+                    <span class="pull-right"><a style="cursor:pointer;" data-toggle="modal" data-target="#addCotton">添加棉料</a></span>
+                </div>
+            <div class="modal fade" id="addCotton" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="addCotton" class="form-horizontal" role="form" enctype="multipart/form-data" method="post">
+                        <input name="projectId" value="{{ project.id }}" hidden>
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel">棉料进货单</h4>
+                            <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="companyName" class="col-sm-2 control-label">公司名称</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" name="companyName" class="form-control" id="companyName" value="{{ project.company.name }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="projectName" class="col-sm-2 control-label">项目名称</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" name="projectName" class="form-control" id="projectName" value="{{ project.name }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="createDate" class="col-sm-2 control-label">收货日期</label>
+                                            <div class="col-sm-10">
+                                                <div class="input-append date" id="miansouhuodan" data-date-format="yyyy-mm-dd">
+                                                    <input name="createDate" class="form-control" type="text" required>
+                                                    <span class="add-on"><i class="icon-remove"></i></span>
+                                                    <span class="add-on"><i class="icon-th"></i></span>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cottonFile" class="col-sm-2 control-label">货单文件</label>
+                                            <div class="col-sm-10">
+                                                <input type="file" name="cottonFile" class="form-control" id="cottonFile" >
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="materialFile" class="col-sm-3 control-label">类型</label>
+                                            <label for="materialFile" class="col-sm-3 control-label">重量</label>
+                                            <label for="materialFile" class="col-sm-3 control-label">米数</label>
+                                            <label for="materialFile" class="col-sm-3 control-label">备注</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-3">
+                                                <input type="text" name="cottonType_1" class="form-control" >
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" name="cottonWeight_1" class="form-control" >
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" name="cottonLength_1" class="form-control" >
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" name="cottonComment_1" class="form-control" >
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-3">
+                                                <input type="text" name="cottonType_2" class="form-control" >
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" name="cottonWeight_2" class="form-control" >
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" name="cottonLength_2" class="form-control" >
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" name="cottonComment_2" class="form-control" >
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-3">
+                                                <input type="text" name="cottonType_3" class="form-control" >
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" name="cottonWeight_3" class="form-control" >
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" name="cottonLength_3" class="form-control" >
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" name="cottonComment_3" class="form-control" >
+                                            </div>
+                                        </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                <button type="submit" class="btn btn-primary">添加棉进货单</button>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+                <div class="panel-body pre-scrollable">
+                    <table class="table table-hover">
+                        <thead>
+                            <th>日期</th><th>类型</th><th>米数</th><th>进货单</th>
+                        </thead>
+                        <tbody>
+                            {% for a in cottons %}
+                                <tr>
+                                <td>{{ a.inTime|date:'Y-m-d' }}</td><td>{{ a.strName }}</td><td>{{ a.length }}</td>
+                                <td>
+                                    {% if a.image %}
+                                         <a href="{{ a.image.url }}"><span class="glyphicon glyphicon-file"></span> 进货单</a>
+                                    {% endif %}
+                                    {% if not a.image %}
+                                         <a href="#"><span class="glyphicon glyphicon-remove"></span> 无进货单</a>
+                                    {% endif %}
+                                </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer pre-scrollable">
+                    <table class="table table-hover">
+                        <thead>
+                            <th>棉类型</th><th>总米数</th>
+                        </thead>
+                        <tbody>
+                            {% for k,v in cottons_map.items %}
+                            <tr>
+                                <td>{{ k }}</td><td>{{ v }}</td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 column">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                 <span class="glyphicon glyphicon-pushpin"></span>   加工记录  <span class="label label-info">{{ records|length }}</span>
+                </div>
+                <div class="panel-body pre-scrollable">
+                    <table class="table table-hover">
+                        <thead>
+                            <th>日期</th><th>员工</th><th>米数</th><th>工时</th>
+                        </thead>
+                        <tbody>
+                            {% for a in records %}
+                                <tr>
+                                <td>{{ a.workDate }}</td><td>{{ a.emp.name}}</td>
+                                <td>{{ a.produce}}</td><td>{{ a.workHour}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="pop_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="jumbotron">
+                    <div class="container">
+                        <p class="text-center" id="pop_comment">{{ project.comment }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () { $("[data-toggle='tooltip']").tooltip(); });
+    function pop() {
+        $('#pop_modal').modal();
+    }
+</script>
+<script>
+     $('input').attr('autocomplete','off')
+</script>
+<script>
+
+    $(document).ready(function(){
+        $('#miansouhuodan').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView:'month',
+            language: 'zh-CN',
+            todayHighlight:true,
+            autoclose:true,
+            todayBtn:true
+        });
+        $('#datetimepicker_souhuodan').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView:'month',
+            language: 'zh-CN',
+            todayHighlight:true,
+            autoclose:true,
+            todayBtn:true
+        });
+        $('#datetimepicker_fahuo').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView:'month',
+            language: 'zh-CN',
+            todayHighlight:true,
+            autoclose:true,
+            todayBtn:true
+        });
+    });
+
+</script>
+</body>
+</html>

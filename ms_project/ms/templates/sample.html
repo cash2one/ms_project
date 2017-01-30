@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {% include 'ms/head.html' %}
+    <title>莫氏绗缝绣饰中心管理系统 - 打样</title>
+    <style>
+        #table td,th{
+            vertical-align:middle;
+            text-align:center;
+        }
+
+    </style>
+
+</head>
+<body class="f2">
+{% include 'ms/nav.html' %}
+<div class="panel-primary">
+    <div class="panel-heading">
+        打样列表
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-3 pre-scrollable">
+                <table class="table table-hover">
+                    {% for company in company_list %}
+                    <tr>{% url 'sampleOfCompany' company.id as sampleOfCompany_url %}
+                        <td><a href="{{ sampleOfCompany_url }}">{{ company.name }}</a></td>
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="col-md-9">
+                <div class="row">
+                    {% include 'ms/sampleSearch.html' %}
+                </div>
+                <div class="row pre-scrollable" id="table">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                        <th>日期</th><th>公司</th><th>联系人</th><th>名称</th><th>加工方式</th>
+                        </thead>
+                        <tbody>
+                        {% for s in sample_list %}
+                            <tr>
+                                <td>{{ s.createDate|date:'Y年m月d日' }}</td>
+                                {% url 'sampleOfCompany' s.company.id as sc_url %}
+                                <td><a href="{{ sc_url }}">{{ s.company.name }}</a></td>
+                                <td>{{ s.contact.first.name }}</td>
+                                <td>{% url 'sampleDetial' s.id as sd_url %}
+                                    <a href="{{ sd_url }}">{{ s.name }}</a>
+                                </td>
+                                <td>
+                                    <table class="table table-hover">
+                                        <tbody>
+                                            {% for sm in s.sampleMap.all %}
+                                            <tr>
+                                                <th>花型</th>
+                                                {% url 'chartDetial' sm.flower.id as sf_url %}
+                                            <td><a href="{{ sf_url }}">{{ sm.flower.name }}</a></td>
+                                                <th>棉类型</th>
+                                            <td>{{ sm.cottonName }} | {{ sm.cottonWeight }} g</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>
+
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+     $('input').attr('autocomplete','off')
+</script>
+</body>
+</html>

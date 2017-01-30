@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {% include 'ms/head.html' %}
+    <title>莫氏绗缝绣饰中心管理系统 - 项目</title>
+</head>
+<body class="f3">
+{% include 'ms/nav.html' %}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        项目列表
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-4 column">
+                <div class="panel panel-primary">
+                    <div class="panel-body pre-scrollable">
+                        <table class="table table-hover">
+                            <thead>
+                                <th>创建时间</th><th>项目名称</th><th>项目状态</th>
+                            </thead>
+                            <tbody>
+                                {% for project in project_list %}
+                                    {% url 'projectDetial' project.id as project_detial_url%}
+                                    <tr>
+                                        <td>{{ project.createDate|date:'Y-m-d' }}</td>
+                                        <td><a href="{{ project_detial_url }}" title="{{ project.company.name }}">{{ project.name }}</a></td>
+                                        <td>{{ project.get_isFinish_display }} | {{ project.get_isClose_display }}</td>
+                                    </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 column">
+                <div class="row">
+                    {% include 'ms/projectSearch.html' %}
+                </div>
+                <div class="row">
+                    <div class="col-md-4 column">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                未完成项目  <span class="label label-info">{{ notFinishedProjects|length }}</span>
+                            </div>
+                            <div class="panel-body pre-scrollable">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <th>日期</th><th>公司</th><th>项目</th>
+                                    </thead>
+                                    <tbody>
+                                    {% for e in notFinishedProjects %}
+                                        <tr>{% url 'projectDetial' e.id as project_detial_url%}
+                                            {% url 'companyDetial' e.company.id as company_detial_url%}
+                                        <td>{{ e.createDate|date:'Y/m/d' }}</td>
+                                            <td><a href="{{ company_detial_url }}">{{ e.company.name }}</a></td>
+                                        <td><a href="{{ project_detial_url }}">{{ e.name }}</a></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 column">
+                        <div class="panel panel-warning">
+                            <div class="panel-heading">
+                                已完成 - 未结算项目  <span class="label label-warning">{{ notClosedProjects|length }}</span>
+                            </div>
+                            <div class="panel-body pre-scrollable">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <th>日期</th><th>公司</th><th>项目</th>
+                                    </thead>
+                                    <tbody>
+                                    {% for e in notClosedProjects %}
+                                        <tr>{% url 'projectDetial' e.id as project_detial_url%}
+                                            {% url 'companyDetial' e.company.id as company_detial_url%}
+                                        <td>{{ e.createDate|date:'Y/m/d' }}</td>
+                                            <td><a href="{{ company_detial_url }}">{{ e.company.name }}</a></td>
+                                        <td><a href="{{ project_detial_url }}">{{ e.name }}</a></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 column">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                已结算项目  <span class="label label-success">{{ closedProjects|length }}</span>
+                            </div>
+                            <div class="panel-body pre-scrollable">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <th>日期</th><th>公司</th><th>项目</th>
+                                    </thead>
+                                    <tbody>
+                                    {% for e in closedProjects %}
+                                        <tr>{% url 'projectDetial' e.id as project_detial_url%}
+                                            {% url 'companyDetial' e.company.id as company_detial_url%}
+                                        <td>{{ e.createDate|date:'Y/m/d' }}</td>
+                                            <td><a href="{{ company_detial_url }}">{{ e.company.name }}</a></td>
+                                        <td><a href="{{ project_detial_url }}">{{ e.name }}</a></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     $('input').attr('autocomplete','off')
+</script>
+</body>
+</html>

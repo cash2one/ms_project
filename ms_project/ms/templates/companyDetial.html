@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {% include 'ms/head.html' %}
+    <title>莫氏绗缝绣饰中心管理系统 - 客户信息</title>
+<style>
+    td,th{
+        vertical-align:middle;
+        text-align:center;
+    }
+
+        #table td,th{
+            vertical-align:middle;
+            text-align:center;
+        }
+
+</style>
+
+</head>
+<body class="f4">
+{% include 'ms/nav.html' %}
+<div class="panel panel-primary" >
+  <div class="panel-heading">{{ company.name }} - 项目</div>
+  <div class="panel-body" >
+	<div class="row" style="height: 260px;">
+        <div class="col-md-4 column pre-scrollable" style="height: 250px;">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                未完成项目  <span class="label label-info">{{ notFinishedProjects|length }}</span>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover">
+                    <thead>
+                          <tr>
+                            <th>项目名称</th><th>创建时间</th><th>备注</th>
+                        </tr>
+                    </thead>
+                    {% for p in notFinishedProjects %}
+                    <tr>{% url 'projectDetial' p.id as project_detial_url %}
+                        <td><a href="{{ project_detial_url }}">{{ p.name }}</a></td>
+                        <td>{{ p.createDate|date:'Y年m月d日' }}</td>
+                        <td>
+                            {% if p.comment|length > 8 %}
+                                <span title="{{ p.comment}}">{{ p.comment|slice:"8"}}...</span>
+                            {% else %}
+                                {{ p.comment}}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+
+        </div>
+
+        <div class="col-md-4 column pre-scrollable" style="height: 250px;">
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                未结算项目 <span class="label label-warning">{{ notClosedProjects|length }}</span>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>项目名称</th><th>创建时间</th><th>备注</th>
+                        </tr>
+                    </thead>
+                    {% for p in notClosedProjects %}
+                    <tr>{% url 'projectDetial' p.id as project_detial_url %}
+                        <td><a href="{{ project_detial_url }}">{{ p.name }}</a></td>
+                        <td>{{ p.createDate|date:'Y年m月d日' }}</td>
+                        <td>
+                            {% if p.comment|length > 8 %}
+                                <span title="{{ p.comment}}">{{ p.comment|slice:"8"}}...</span>
+                            {% else %}
+                                {{ p.comment}}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        </div>
+
+        <div class="col-md-4 column pre-scrollable" style="height: 250px;">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                已结算项目  <span class="label label-success">{{ closedProjects|length }}</span>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>项目名称</th><th>创建时间</th><th>备注</th>
+                        </tr>
+                    </thead>
+                    {% for p in closedProjects %}
+                    <tr>{% url 'projectDetial' p.id as project_detial_url %}
+                        <td><a href="{{ project_detial_url }}">{{ p.name }}</a></td>
+                        <td>{{ p.createDate|date:'Y年m月d日' }}</td>
+                        <td>
+                            {% if p.comment|length > 8 %}
+                                <span title="{{ p.comment}}">{{ p.comment|slice:"8"}}...</span>
+                            {% else %}
+                                {{ p.comment}}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="row">
+            <div class="panel-info">
+                <div class="panel-heading">
+                    相关打样列表 <span class="label label-info"> {{ sample_list|length }}</span>
+                </div>
+                <div class="panel-body pre-scrollable" id="table">
+                    <table class="table table-hover">
+                    <thead>
+                    <th>编号</th><th>日期</th><th>公司</th><th>名称</th><th>联系人</th><th>加工方式</th>
+                    </thead>
+                    {% for s in sample_list %}
+                        <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ s.createDate|date:'Y年m月d日' }}</td>
+                        <td>{% url 'sampleOfCompany' s.company.id as sc_url %}
+                            <a href="{{ sc_url }}">{{ s.company.name }}</a></td>
+                        <td>{% url 'sampleDetial' s.id as sd_url %}
+                        <a href="{{ sd_url }}">{{ s.name }}</a>
+                        </td>
+                        <td>{{ s.contact.first.name }}</td>
+                        <td>
+                            <table class="table table-hover">
+                                        <tbody>
+                                            {% for sm in s.sampleMap.all %}
+                                            <tr>
+                                                <th>花型</th>
+                                                {% url 'chartDetial' sm.flower.id as sf_url %}
+                                                <td><a href="{{ sf_url }}">{{ sm.flower.name }}</a></td>
+                                                <th>棉类型</th>
+                                                <td>{{ sm.cottonName }} | {{ sm.cottonWeight }} g</td>
+                                                <th>加工机器</th>
+                                                <td>{{ sm.machine.name }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                            </table>
+                        </td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+  </div>
+</div>
+</body>
+</html>

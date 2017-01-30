@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {% include 'ms/head.html' %}
+
+    <title>莫氏绗缝绣饰中心管理系统 - 客户</title>
+</head>
+<body class="f4">
+{% include 'ms/nav.html' %}
+<div class="panel panel-primary" style="height: 500px;">
+  <div class="panel-heading">客戶列表</div>
+  <div class="panel-body" >
+	<div class="row ">
+        <div class="col-md-3 column pre-scrollable">
+		{% include 'ms/companyList.html' %}
+        </div>
+		<div class="col-md-9 column">
+            <div class="row ">
+            {% include 'ms/projectSearch.html' %}
+            </div>
+            <div class="row ">
+                <div class="col-md-12 column pre-scrollable">
+                    <table class="table table-hover">
+                        <thead>
+                            <th>公司名称</th><th>项目名称</th><th>创建时间</th><th>项目联系人</th><th>项目进度</th><th>结算进度</th><th>备注</th>
+                        </thead>
+                        {% for project in project_list %}
+                                <tr>
+                                    {% url 'admin:ms_project_change' project.id as change_project_url %}
+                                <td><a href='{{ change_project_url}}'>{{ project.company.name }}</a></td>
+                                    {% url 'projectDetial' project.id as projectDetial_url %}
+                                <td><a href="{{ projectDetial_url }}">{{ project.name }}</a></td>
+                                <td>{{ project.createDate|date:'Y年m月d日' }}</td>
+                                <td><span title="电话: {{ project.contact.first.phone }}"> {{ project.contact.first.name }} </span>
+                                </td>
+                                <td>{{ project.get_isFinish_display }}</td><td>{{ project.get_isClose_display }}</td>
+                                    {% if project.comment|length > 8 %}
+                                        <td><span title="{{ project.comment}}">{{ project.comment|slice:"8"}}...</span></td>
+                                    {% else %}
+                                        <td>{{ project.comment}}</td>
+                                    {% endif %}
+
+                            </tr>
+                        {% endfor %}
+
+                    </table>
+                </div>
+
+            </div>
+
+		</div>
+	</div>
+  </div>
+</div>
+<script>
+     $('input').attr('autocomplete','off')
+</script>
+</body>
+</html>
