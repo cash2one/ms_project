@@ -218,7 +218,7 @@ class Record(models.Model):
     workDate.short_description = '工作日期'
 
     def workHour(self):
-        hour = int((self.outTime - self.inTime).seconds / 3600)
+        hour = float((self.outTime - self.inTime).seconds / 3600)
         return hour
 
     workHour.short_description = '工作时长'
@@ -272,4 +272,4 @@ class Sample(models.Model):
     class Meta:
         verbose_name = '打样'
         verbose_name_plural = verbose_name
-        ordering = ['-company']
+        ordering = ['-company']        ordering = ['-company']
