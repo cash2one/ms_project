@@ -272,4 +272,4 @@ class Sample(models.Model):
     class Meta:
         verbose_name = '打样'
         verbose_name_plural = verbose_name
-        ordering = ['-company']        ordering = ['-company']
+        ordering = ['-company']
