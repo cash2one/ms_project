@@ -8,35 +8,19 @@
 {% include 'ms/nav.html' %}
 <div class="panel panel-primary">
     <div class="panel-heading">
-        项目列表
+        项目列表 - 剩余项目量：{{ notFinishedProjects|length }} 个 - 剩余项目总米数：{{ sumLength }} 米
     </div>
     <div class="panel-body">
         <div class="row">
-            <div class="col-md-4 column">
-                <div class="panel panel-primary">
-                    <div class="panel-body pre-scrollable">
-                        <table class="table table-hover">
-                            <thead>
-                                <th>创建时间</th><th>项目名称</th><th>项目状态</th>
-                            </thead>
-                            <tbody>
-                                {% for project in project_list %}
-                                    {% url 'projectDetial' project.id as project_detial_url%}
-                                    <tr>
-                                        <td>{{ project.createDate|date:'Y-m-d' }}</td>
-                                        <td><a href="{{ project_detial_url }}" title="{{ project.company.name }}">{{ project.name }}</a></td>
-                                        <td>{{ project.get_isFinish_display }} | {{ project.get_isClose_display }}</td>
-                                    </tr>
-                                {% endfor %}
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-8 column">
+            <div class="col-md-12 column">
                 <div class="row">
-                    {% include 'ms/projectSearch.html' %}
+                    <div class="col-md-2 column">
+                    </div>
+                    <div class="col-md-8 column">
+                        {% include 'ms/projectSearch.html' %}
+                    </div>
+                    <div class="col-md-2 column">
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4 column">
@@ -110,6 +94,31 @@
                                 </table>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 column">
+                <div class="panel panel-primary">
+                    <div class="panel-body pre-scrollable">
+                        <table class="table table-hover">
+                            <thead>
+                                <th>创建时间</th><th>公司名称</th><th>项目名称</th><th>项目状态</th>
+                            </thead>
+                            <tbody>
+                                {% for project in project_list %}
+                                    {% url 'projectDetial' project.id as project_detial_url%}
+                                    <tr>
+                                        <td>{{ project.createDate|date:'Y-m-d' }}</td>
+                                        <td>{{ project.company.name }}</td>
+                                        <td><a href="{{ project_detial_url }}" title="{{ project.company.name }}">{{ project.name }}</a></td>
+                                        <td>{{ project.get_isFinish_display }} | {{ project.get_isClose_display }}</td>
+                                    </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

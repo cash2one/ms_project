@@ -6,7 +6,9 @@
                 <table class="table table-hover">
                     {% for emp in emp_list %}
                     <tr>{% url 'empDetial' emp.id as emp_url %}
-                        <td><a href="{{ emp_url }}">{{ emp.name }}</a></td>
+                        <td><a href="{{ emp_url }}">{{ emp.name }}</a>
+                            <span class="pull-right">{{ emp.get_onduty_display  }}</span>
+                        </td>
                     </tr>
                     {% endfor %}
                 </table>
@@ -14,9 +16,8 @@
             <div class="col-md-10 column">
                 <div class="col-md-12 column">
                     <div class="btn-group btn-group-md">
-                        <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-align-left"></em><a href="admin/ms/record/add"> 添加工作记录</a></button>
-                        <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-align-left"></em><a href="admin/ms/record"> 查询工作记录</a></button>
-                        <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-align-left"></em> 统计报告</button>
+                        <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-align-left"></em><a style="cursor:pointer;" data-toggle="modal" data-target="#newRecord"> 添加工作记录</a></button>
+                        <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-align-left"></em><a style="cursor:pointer;" data-toggle="modal" data-target="#report"> 统计报告</a></button>
                     </div>
                 </div>
                 <div class="col-md-12 column pre-scrollable">
@@ -25,8 +26,8 @@
                             <th>名字</th><th>上班时间</th><th>下班时间</th><th>工作时长</th><th>项目</th><th>日产量</th><th>备注</th>
                         </thead>
                         {% for record in record_list %}
-                            <tr>{% url 'admin:ms_record_change' record.id as change_record_url %}
-                                <td><a href='{{ change_record_url}}'>{{ record.emp }}</a></td><td>{{ record.inTime|date:'Y年m月d日 H:i' }}</td><td>{{ record.outTime|date:'Y年m月d日 H:i' }}</td>
+                            <tr>
+                                <td>{{ record.emp }}</td><td>{{ record.inTime|date:'Y年m月d日 H:i' }}</td><td>{{ record.outTime|date:'Y年m月d日 H:i' }}</td>
                                 <td>{{ record.workHour }}</td>
                                 {% url 'projectDetial' record.project.id as rpi_url %}
                                 <td><a href="{{ rpi_url }}">{{ record.project }}</a></td>
@@ -46,3 +47,256 @@
 
   </div>
 </div>
+<div class="modal fade" id="report" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="reportOfrecord" class="form-horizontal" role="form" method="post">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">员工工作记录报表</h4>
+                </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">员工</label>
+                            <div class="col-sm-10">
+                                <select class="selectpicker" data-live-search="true" name="emp">
+                                <option value="0">全部员工</option>
+                                {% for emp in emp_list %}
+                                    <option value="{{ emp.id }}">{{ emp.name }}</option>
+                                {% endfor %}
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                                <label class="col-sm-2 control-label">开始日期</label>
+                                <div class="col-sm-10">
+                                    <div class="input-append date" id="datetimepicker_emp_start" data-date-format="yyyy-mm-dd">
+                                        <input name="startdate" class="form-control" type="text" required>
+                                        <span class="add-on"><i class="icon-remove"></i></span>
+                                        <span class="add-on"><i class="icon-th"></i></span>
+                                    </div>
+                                </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">结束日期</label>
+                            <div class="col-sm-10">
+                                <div class="input-append date" id="datetimepicker_emp_end" data-date-format="yyyy-mm-dd">
+                                    <input name="enddate" class="form-control" type="text" required>
+                                    <span class="add-on"><i class="icon-remove"></i></span>
+                                    <span class="add-on"><i class="icon-th"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">生成报告</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="newRecord" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="newrecord" class="form-horizontal" role="form" method="post">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">添加员工工作记录</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                               <div class="input-group">
+                                  <span class="input-group-addon">
+                                     员工姓名
+                                  </span>
+                                  <select class="selectpicker" data-live-search="true" name="emp_name">
+                                            {% for c in emp_list %}
+                                                <option value="{{ c.id }}">{{ c.name }}</option>
+                                            {% endfor %}
+                                  </select>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                               <div class="input-group">
+                                  <span class="input-group-addon">
+                                     公司名称
+                                  </span>
+                                  <select class="selectpicker" data-live-search="true" name="emp_company">
+                                            {% for c in company_list %}
+                                                <option value="{{ c.id }}">{{ c.name }}</option>
+                                            {% endfor %}
+                                  </select>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-12">
+                               <div class="input-group">
+                                  <span class="input-group-addon">
+                                     项目名称
+                                  </span>
+                                  <select class="selectpicker" data-live-search="true" name="emp_project">
+                                            {% for c in project_list %}
+                                                <option value="{{ c.id }}">{{ c.name }}-{{ c.company.name|truncatechars:15 }}</option>
+                                            {% endfor %}
+                                  </select>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                     日产量
+                                    </span>
+                                    <input type="text" class="form-control" name="emp_produce" required>
+                                    <span class="input-group-addon">
+                                     米
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                           <div class="col-md-8">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        上班时间
+                                    </span>
+                                    <div class="input-append date" id="emp_in_datetimepicker" data-date-format="yyyy-mm-dd hh:ii">
+                                        <input id="emp_inTime" name="emp_inTime" class="form-control" type="text" autocomplete="off" required>
+                                        <span class="add-on"><i class="icon-remove"></i></span>
+                                        <span class="add-on"><i class="icon-th"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        下班时间
+                                    </span>
+                                    <div class="input-append date" id="emp_out_datetimepicker" data-date-format="yyyy-mm-dd">
+                                        <input id="emp_outTime" name="emp_outTime" class="form-control" type="text" autocomplete="off" required>
+                                        <span class="add-on"><i class="icon-remove"></i></span>
+                                        <span class="add-on"><i class="icon-th"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        工作时长
+                                    </span>
+                                    <input id="emp_hours" type="text" name="emp_hours" class="form-control" disabled>
+                                    <span class="input-group-addon">小时</span>
+                                </div>
+                            </div>
+
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        备注
+                                    </span>
+                                    <input type="text" name="emp_comment" class="form-control" placeholder="备注" >
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">添加工作记录</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+
+    $(document).ready(function(){
+        $('#datetimepicker_emp_start').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView:'month',
+            language: 'zh-CN',
+            todayHighlight:true,
+            autoclose:true,
+            todayBtn:true
+        });
+        $('#datetimepicker_emp_end').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView:'month',
+            language: 'zh-CN',
+            todayHighlight:true,
+            autoclose:true,
+            todayBtn:true
+        });
+        $('#emp_in_datetimepicker').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii',
+        minView:'0',
+        language: 'zh-CN',
+        autoclose:false,
+        todayHighlight:true,
+        todayBtn:true,
+        initialDate:new Date()
+    });
+        $('#emp_out_datetimepicker').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii',
+        minView:'0',
+        language: 'zh-CN',
+        autoclose:false,
+        todayHighlight:true,
+        todayBtn:true,
+        initialDate :new Date()
+    });
+
+
+        $("#emp_inTime").change(function(){
+      var inTime = $('#emp_inTime').val()
+      var outTime = $('#emp_outTime').val()
+      if(inTime && outTime){
+          var hours = parseInt(new Date(outTime) - new Date(inTime)) / 1000 / 3600;
+          $('#emp_hours').val(hours)
+      }
+
+
+  });
+   $("#emp_outTime").change(function(){
+      var inTime = $('#emp_inTime').val()
+      var outTime = $('#emp_outTime').val()
+      if(inTime && outTime){
+          var hours = parseInt(new Date(outTime) - new Date(inTime)) / 1000 / 3600;
+          $('#emp_hours').val(hours)
+      }
+
+
+  });
+    });
+
+</script>

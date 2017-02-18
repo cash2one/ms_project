@@ -56,6 +56,8 @@ urlpatterns = [
     url(r'addDelivery$', views.addDelivery, name='addDelivery'),
     url(r'addMaterial$', views.addMaterial, name='addMaterial'),
     url(r'addCotton$', views.addCotton, name='addCotton'),
-    url(r'outputCSV/(?P<pid>[0-9]+)$', views.outputCSV, name='outputCSV')
+    url(r'outputCSV/(?P<pid>[0-9]+)$', views.outputCSV, name='outputCSV'),
+    url(r'reportOfrecord$', views.recordReport, name='recordReport'),
+    url(r'newrecord$',views.newrecord, name='newrecord')
 
 ]

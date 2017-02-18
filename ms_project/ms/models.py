@@ -1,5 +1,5 @@
 from django.db import models
-
+import time
 
 # 客户
 class Company(models.Model):
@@ -206,7 +206,7 @@ class Record(models.Model):
     strInTime.short_description = '上班时间'
 
     def strOutTime(self):
-        strDate = self.inTime.strftime('%Y-%m-%d  %H:%m')
+        strDate = self.outTime.strftime('%Y-%m-%d  %H:%m')
         return strDate
 
     strOutTime.short_description = '下班时间'

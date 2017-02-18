@@ -63,7 +63,7 @@ def login(request):
         # Correct password, and the user is marked "active"
         auth.login(request, user)
         # Redirect to a success page.
-        return render(request, 'home.html')
+        return home(request)
     else:
         # Show an error page
         return index(request)
@@ -78,14 +78,18 @@ def logout(request):
 def emp(request):
     emps = models.Emp.objects.all()
     records = models.Record.objects.all()
-    return render(request,'emp.html', {'emp_list': emps, 'record_list': records})
+    company_list = models.Company.objects.all()
+    project_list = models.Project.objects.filter(isClose=0).filter(isFinish=0)
+    return render(request,'emp.html', {'emp_list': emps, 'record_list': records, 'company_list':company_list, 'project_list':project_list})
 
 
 @require_http_methods(["GET"])
 def empDetial(request, eid='1'):
     emps = models.Emp.objects.all()
     records = models.Record.objects.filter(emp__id=eid)
-    return render(request, 'emp_detial.html', {'emp_list': emps, 'record_list': records})
+    company_list = models.Company.objects.all()
+    project_list = models.Project.objects.filter(isClose=0).filter(isFinish=0)
+    return render(request, 'emp_detial.html', {'emp_list': emps, 'record_list': records, 'company_list':company_list, 'project_list':project_list})
 
 
 @require_http_methods(["GET", "POST"])
@@ -123,7 +127,15 @@ def company(request):
         # get method
         project = models.Project.objects.all().order_by('-createDate')
     companys = models.Company.objects.all()
-    return render(request, 'company.html', {'company_list': companys, 'project_list': project})
+    companyLengthMap = {}
+    sumlengthOfCompany = 0.0
+    for c in companys:
+        material_list = models.Material.objects.filter(project__company_id=c.id)
+        for m in material_list:
+            sumlengthOfCompany = sumlengthOfCompany + m.length
+        companyLengthMap[c.id] = sumlengthOfCompany
+        sumlengthOfCompany = 0.0
+    return render(request, 'company.html', {'company_list': companys, 'project_list': project, 'companyLengthMap':companyLengthMap})
 
 
 def companyDetial(request, cid='0'):
@@ -146,9 +158,11 @@ def projectDetial(request, pid='1'):
     records = project.record_set.all()
     delivery = project.delivery_set.all()
     material_map = {}
+    sumLength = 0.0
     for m in materials:
         key = str(m.num)+' - '+str(m.color)
         value = m.length
+        sumLength = sumLength + value
         if key in material_map.keys():
             a = material_map.get(key)
             material_map[key] = a + value
@@ -201,7 +215,8 @@ def projectDetial(request, pid='1'):
                                                 'material_map':material_map,
                                                 'delivery_map': delivery_map,
                                                 'cottons_map': cottons_map,
-                                                'info_map':info_map})
+                                                'info_map':info_map,
+                                                'sumLength':sumLength})
 
 
 def project(request):
@@ -209,10 +224,17 @@ def project(request):
     notFinishedProjects = models.Project.objects.filter(isFinish=0).order_by('-createDate')  # 未完成 未结算
     notClosedProjects = models.Project.objects.filter(isFinish=1).filter(isClose=0).order_by('-createDate') #已完成 未结算
     closedProjects = models.Project.objects.filter(isFinish=1).filter(isClose=1).order_by('-createDate')  # 已完成 已结算
+    sumLength = 0.0
+    for p in notFinishedProjects:
+        materiallist = models.Material.objects.filter(project_id=p.id)
+        for m in materiallist:
+            sumLength = sumLength + m.length
+
     return render(request,'project.html',{'project_list':project_list,
                                           'notFinishedProjects':notFinishedProjects,
                                           'notClosedProjects': notClosedProjects,
-                                          'closedProjects': closedProjects,})
+                                          'closedProjects': closedProjects,
+                                          'sumLength':sumLength})
 
 
 def contactList(request, cid=''):
@@ -948,3 +970,54 @@ def outputCSV(request, pid):
 
     response.close()
     return response
+
+
+def recordReport(request):
+    request.encoding = 'utf-8'
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment;filename="record_report.csv"'
+    response.write(codecs.BOM_UTF8)
+    writer = csv.writer(response)
+    empid = request.POST.get('emp')
+    startDate = request.POST.get('startdate')
+    endDate = request.POST.get('enddate')
+
+    if empid == '0':
+        writer.writerow(['统计报告', '全部员工', '开始日期', startDate, '结束日期', endDate])
+        records = models.Record.objects.filter(inTime__gte=startDate).filter(outTime__lte=endDate).order_by('inTime')
+    else:
+        records = models.Record.objects.filter(emp_id=empid).filter(inTime__gte=startDate).filter(outTime__lte=endDate).order_by('inTime')
+        writer.writerow(['统计报告', models.Emp.objects.get(id=empid).name, '开始日期', startDate, '结束日期', endDate])
+
+
+    writer.writerow(['员工ID', '员工姓名', '日期', '上班时间', '下班时间', '工作时长', '备注'])
+    for record in records:
+        writer.writerow([record.emp_id, record.emp.name, record.workDate(), record.inTime, record.outTime, record.workHour(), record.comment])
+
+    response.close()
+    return response
+
+
+def newrecord(request):
+    empRecordForm = EmpRecordForm(request.POST, request.FILES)
+    if empRecordForm.is_valid():
+        emp_id = empRecordForm.cleaned_data['emp_name']
+        emp_project_id = empRecordForm.cleaned_data['emp_project']
+        emp = models.Emp.objects.get(id=emp_id)
+        projectObj = models.Project.objects.get(id=emp_project_id)
+        emp_produce = empRecordForm.cleaned_data['emp_produce']
+        emp_inTime = empRecordForm.cleaned_data['emp_inTime']
+        emp_outTime = empRecordForm.cleaned_data['emp_outTime']
+        emp_comment = empRecordForm.cleaned_data['emp_comment']
+        models.Record.objects.create(emp=emp,
+                                     project=projectObj,
+                                     produce=emp_produce,
+                                     inTime=emp_inTime,
+                                     outTime=emp_outTime,
+                                     comment=emp_comment)
+    emps = models.Emp.objects.all()
+    records = models.Record.objects.all()
+    company_list = models.Company.objects.all()
+    project_list = models.Project.objects.filter(isClose=0).filter(isFinish=0)
+    return render(request, 'emp.html', {'emp_list': emps, 'record_list': records, 'company_list': company_list,
+                                        'project_list': project_list})

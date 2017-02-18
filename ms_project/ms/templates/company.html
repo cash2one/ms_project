@@ -26,8 +26,8 @@
                         </thead>
                         {% for project in project_list %}
                                 <tr>
-                                    {% url 'admin:ms_project_change' project.id as change_project_url %}
-                                <td><a href='{{ change_project_url}}'>{{ project.company.name }}</a></td>
+                                    {% url 'companyDetial' project.company.id as company_url_1 %}
+                                <td><a href='{{ company_url_1}}'>{{ project.company.name }}</a></td>
                                     {% url 'projectDetial' project.id as projectDetial_url %}
                                 <td><a href="{{ projectDetial_url }}">{{ project.name }}</a></td>
                                 <td>{{ project.createDate|date:'Y年m月d日' }}</td>

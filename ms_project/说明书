@@ -28,4 +28,7 @@ models 先makemigrations后migrate
      $('input').attr('autocomplete','off')
 </script>
 
+滚动条效果
+style="overflow-x: auto; overflow-y: auto; height: 580px;"
+
 python manage.py collectstatic
