@@ -1021,3 +1021,102 @@ def newrecord(request):
     project_list = models.Project.objects.filter(isClose=0).filter(isFinish=0)
     return render(request, 'emp.html', {'emp_list': emps, 'record_list': records, 'company_list': company_list,
                                         'project_list': project_list})
+
+
+import smtplib
+from email.mime.text import MIMEText
+import time
+def sendmail(request):
+
+    _user = "ms_admin_mail@163.com"
+    _pwd = "ms13034277213"
+    _to = "642294626@qq.com"
+
+    str_sample = '<tr><td rowspan="{rowspan}">{company_name}</td><td rowspan="{rowspan}">{project_name}</td>' \
+                 '<td rowspan="{rowspan}">{project_comment}</td></tr>'
+
+    str_material = """
+    <tr><td>{material_num_and_color}</td><td>{material_length}</td><td>{material_sendout_length}</td><td>{material_remain_length}</td></tr>
+    """
+
+    project_list = models.Project.objects.filter(isClose=0).order_by('company_id').order_by('-createDate')
+    sumLine = ''
+    for project in project_list:
+
+        material_list = models.Material.objects.filter(project_id=project.id)
+        delivery_list = models.Delivery.objects.filter(project_id=project.id)
+
+        material_map = {}
+        sumLength = 0.0
+        for m in material_list:
+            key = str(m.num) + ' - ' + str(m.color)
+            value = m.length
+            sumLength = sumLength + value
+            if key in material_map.keys():
+                a = material_map.get(key)
+                material_map[key] = a + value
+            if key not in material_map.keys():
+                material_map[key] = value
+
+        delivery_map = {}
+        for m in delivery_list:
+            key = str(m.num) + ' - ' + str(m.color)
+            value = m.length
+            if key in delivery_map.keys():
+                a = delivery_map.get(key)
+                delivery_map[key] = a + value
+            if key not in delivery_map.keys():
+                delivery_map[key] = value
+
+
+
+        rowspan = 1
+        for k, v in material_map.items():
+            rowspan = rowspan +1
+
+        line = str_sample.format(rowspan=rowspan, company_name=project.company.name, project_name=project.name
+                                     , project_comment=project.comment)
+
+        for k, v in material_map.items():
+            if delivery_map.get(k):
+                material_remain_length = v - delivery_map.get(k)
+            else:
+                material_remain_length = v
+            item = str_material.format(material_num_and_color=k, material_length=v, material_sendout_length=delivery_map.get(k), material_remain_length=material_remain_length)
+            line = line + item
+
+        sumLine = sumLine + line
+
+    now = time.localtime(time.time())
+    strnow = time.strftime('%Y-%m-%d',now)
+    msg = MIMEText("""
+    <div>
+    <h4 align=center><a href="http://www.quiltinggroup.com">莫氏绗缝绣饰中心</a> - 项目汇报 - {date}</h4>
+    </div>
+    <div>
+
+    </div>
+    <div>
+        <table border="1.5px;" style="word-break:break-all; word-wrap:break-all;" align=center>
+            <th>公司名称</th><th>项目名称</th><th>加工备注</th><th>缸号 - 颜色</th><th>总米数</th><th>已发货米数</th><th>剩余米数</th>
+            <tbody>
+                {table}
+            </tbody>
+        </table>
+    </div>
+
+    """.format(table=sumLine,date=strnow)
+                   ,'html','utf-8')
+    msg["Subject"] = "项目汇报 "+strnow
+    msg["From"] = _user
+    msg["To"] = _to
+    message = ''
+    try:
+        s = smtplib.SMTP_SSL('smtp.163.com',465)
+        s.login(_user, _pwd)
+        s.sendmail(_user, _to, msg.as_string())
+        s.quit()
+        message = '发送邮件成功'
+    except smtplib.SMTPException as  e:
+        message = '发送邮件失败'
+    return HttpResponse(message)
