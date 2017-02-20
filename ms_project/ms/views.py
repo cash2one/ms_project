@@ -1028,8 +1028,8 @@ from email.mime.text import MIMEText
 import time
 def sendmail(request):
 
-    _user = "ms_admin_mail@163.com"
-    _pwd = "ms13034277213"
+    _user = "*"
+    _pwd = "*"
     _to = "642294626@qq.com"
 
     str_sample = '<tr><td rowspan="{rowspan}">{company_name}</td><td rowspan="{rowspan}">{project_name}</td>' \
