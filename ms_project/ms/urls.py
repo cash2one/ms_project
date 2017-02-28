@@ -15,8 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from ms import views
-from django.conf.urls.static import static
-from django.conf import settings
+from django.contrib import admin
 
 
 urlpatterns = [
@@ -58,6 +57,7 @@ urlpatterns = [
     url(r'addCotton$', views.addCotton, name='addCotton'),
     url(r'outputCSV/(?P<pid>[0-9]+)$', views.outputCSV, name='outputCSV'),
     url(r'reportOfrecord$', views.recordReport, name='recordReport'),
-    url(r'newrecord$',views.newrecord, name='newrecord')
+    url(r'newrecord$',views.newrecord, name='newrecord'),
+    url(r'sendmail',views.sendmail, name='sendmail')
 
 ]

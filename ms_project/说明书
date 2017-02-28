@@ -32,3 +32,4 @@ models 先makemigrations后migrate
 style="overflow-x: auto; overflow-y: auto; height: 580px;"
 
 python manage.py collectstatic
+

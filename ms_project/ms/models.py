@@ -66,6 +66,11 @@ class Project(models.Model):
     isClose = models.CharField(verbose_name='结算', max_length=1, choices=(('0', '未结算'), ('1', '已结算'),), default='0')
     comment = models.CharField(max_length=100,verbose_name='备注', blank=True)
 
+
+    def strCreateDate(self):
+        strDate = self.createDate.strftime('%Y-%m-%d')
+        return strDate
+
     def __str__(self):
         return u'%s - %s' % (self.company.name, self.name)
 
