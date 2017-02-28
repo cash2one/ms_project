@@ -1030,6 +1030,7 @@ from email.mime.text import MIMEText
 import time
 def sendmail(request):
 
+<<<<<<< HEAD
     _user = "aaa"
     _pwd = "ccc"
     _to = "ddd"
@@ -1051,6 +1052,20 @@ def sendmail(request):
     """
 
     project_list = models.Project.objects.filter(isClose=0).order_by('company_id','-createDate')
+=======
+    _user = "*"
+    _pwd = "*"
+    _to = "642294626@qq.com"
+
+    str_sample = '<tr><td rowspan="{rowspan}">{company_name}</td><td rowspan="{rowspan}">{project_name}</td>' \
+                 '<td rowspan="{rowspan}">{project_comment}</td></tr>'
+
+    str_material = """
+    <tr><td>{material_num_and_color}</td><td>{material_length}</td><td>{material_sendout_length}</td><td>{material_remain_length}</td></tr>
+    """
+
+    project_list = models.Project.objects.filter(isClose=0).order_by('company_id').order_by('-createDate')
+>>>>>>> origin/master
     sumLine = ''
     for project in project_list:
 
@@ -1085,7 +1100,11 @@ def sendmail(request):
         for k, v in material_map.items():
             rowspan = rowspan +1
 
+<<<<<<< HEAD
         line = str_sample.format(rowspan=rowspan,project_date=project.strCreateDate(), company_name=project.company.name, project_name=project.name
+=======
+        line = str_sample.format(rowspan=rowspan, company_name=project.company.name, project_name=project.name
+>>>>>>> origin/master
                                      , project_comment=project.comment)
 
         for k, v in material_map.items():
@@ -1100,7 +1119,11 @@ def sendmail(request):
 
     now = time.localtime(time.time())
     strnow = time.strftime('%Y-%m-%d',now)
+<<<<<<< HEAD
     mail_text = """
+=======
+    msg = MIMEText("""
+>>>>>>> origin/master
     <div>
     <h4 align=center><a href="http://www.quiltinggroup.com">莫氏绗缝绣饰中心</a> - 项目汇报 - {date}</h4>
     </div>
@@ -1109,7 +1132,11 @@ def sendmail(request):
     </div>
     <div>
         <table border="1.5px;" style="word-break:break-all; word-wrap:break-all;" align=center>
+<<<<<<< HEAD
             <th>日期</th><th>公司名称</th><th>项目名称</th><th>加工备注</th><th>缸号 - 颜色</th><th>总米数</th><th>已发货米数</th><th>剩余米数</th>
+=======
+            <th>公司名称</th><th>项目名称</th><th>加工备注</th><th>缸号 - 颜色</th><th>总米数</th><th>已发货米数</th><th>剩余米数</th>
+>>>>>>> origin/master
             <tbody>
                 {table}
             </tbody>
@@ -1117,8 +1144,13 @@ def sendmail(request):
     </div>
 
     """.format(table=sumLine,date=strnow)
+<<<<<<< HEAD
     msg = MIMEText(mail_text,'html','utf-8')
     msg["Subject"] = "莫氏绗缝绣饰中心 "+strnow
+=======
+                   ,'html','utf-8')
+    msg["Subject"] = "项目汇报 "+strnow
+>>>>>>> origin/master
     msg["From"] = _user
     msg["To"] = _to
     message = ''
@@ -1129,6 +1161,9 @@ def sendmail(request):
         s.quit()
         message = '发送邮件成功'
     except smtplib.SMTPException as  e:
+<<<<<<< HEAD
         print(e)
+=======
+>>>>>>> origin/master
         message = '发送邮件失败'
     return HttpResponse(message)
